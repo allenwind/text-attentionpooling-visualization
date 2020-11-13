@@ -1,7 +1,8 @@
 import numpy as np
 from stringcolor import cs
 
-_ = [
+# 蓝色系hex
+colors = [
     "#4682B4",
     "#87CEEB",
     "#87CEFA",
@@ -15,6 +16,7 @@ _ = [
     "#000080"
 ]
 
+# 红色系hex
 colors = [
     "#f5f5ff",
     "#ffe0e0",
@@ -39,4 +41,6 @@ def print_color_string(string, ws):
 
 if __name__ == "__main__":
     # for testing
-    print_color_string("abcdef", [1, 2, 3, 4, 5])
+    import string
+    s = string.ascii_letters
+    print_color_string(s, np.arange(len(s)))

@@ -1,5 +1,8 @@
+import re
 import itertools
 import collections
+import pandas as pd
+import numpy as np
 
 _THUCNews = "/home/zhiwen/workspace/dataset/THUCNews-title-label.txt"
 def load_THUCNews_title_label(file=_THUCNews):
@@ -17,6 +20,25 @@ def load_THUCNews_title_label(file=_THUCNews):
     categoricals = {label:i for i, label in enumerate(categoricals)}
     clabels = [categoricals[i] for i in labels]
     return titles, clabels, categoricals
+
+_w100k = "/home/zhiwen/workspace/dataset/classification/weibo_senti_100k/weibo_senti_100k.csv"
+def load_weibo_senti_100k(file=_w100k, noe=True):
+    df = pd.read_csv(file)
+    X = df.review.to_list()
+    y = df.label.to_list()
+    # 去 emoji 表情
+    if noe:
+        X = [re.sub("\[.+?\]", lambda x:"", s) for s in X]
+    categoricals = {"负面":0, "正面":1}
+    return X, y, categoricals
+
+_MOODS = "/home/zhiwen/workspace/dataset/classification/simplifyweibo_4_moods.csv"
+def load_simplifyweibo_4_moods(file=_MOODS):
+    df = pd.read_csv(file)
+    X = df.review.to_list()
+    y = df.label.to_list()
+    categoricals = {'喜悦':0, '愤怒':1, '厌恶':2, '低落':3}
+    return X, y, categoricals
 
 class SimpleTokenizer:
     """字转ID
@@ -65,3 +87,16 @@ class SimpleTokenizer:
     @property
     def vocab(self):
         return self.char2id
+
+def find_best_maxlen(X, mode="max"):
+    # 获取适合的截断长度
+    ls = [len(sample) for sample in X]
+    if mode == "mode":
+        maxlen = np.argmax(np.bincount(ls))
+    if mode == "mean":
+        maxlen = np.mean(ls)
+    if mode == "median":
+        maxlen = np.median(ls)
+    if mode == "max":
+        maxlen = np.max(ls)
+    return int(maxlen)

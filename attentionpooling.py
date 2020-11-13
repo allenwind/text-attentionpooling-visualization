@@ -3,9 +3,9 @@ from tensorflow.keras.layers import *
 
 class AttentionPooling1D(tf.keras.layers.Layer):
 
-    def __init__(self, h_dim, kernel_initializer="glorot_uniform", **kwargs):
+    def __init__(self, hdims, kernel_initializer="glorot_uniform", **kwargs):
         super(AttentionPooling1D, self).__init__(**kwargs)
-        self.h_dim = h_dim
+        self.hdims = hdims
         self.kernel_initializer = tf.keras.initializers.get(
             kernel_initializer
         )
@@ -14,7 +14,7 @@ class AttentionPooling1D(tf.keras.layers.Layer):
 
     def build(self, input_shape):
         self.k_dense = tf.keras.layers.Dense(
-            units=self.h_dim,
+            units=self.hdims,
             kernel_initializer=self.kernel_initializer,
             #kernel_regularizer="l2",
             activation="tanh",
@@ -31,7 +31,7 @@ class AttentionPooling1D(tf.keras.layers.Layer):
             mask = 1
         else:
             # 扩展维度便于广播
-            mask = tf.expand_dims(tf.cast(mask, "float32"), -1)
+            mask = tf.expand_dims(tf.cast(mask, tf.float32), -1)
         x0 = inputs
         # 计算每个 time steps 权重
         w = self.k_dense(inputs)
