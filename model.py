@@ -95,7 +95,7 @@ def visualization():
         # print(weights.flatten() * len(sample))
 
         print_color_string(sample, weights.flatten())
-        print("=>", id_to_classes[y_pred_id])
+        print(" =>", id_to_classes[y_pred_id])
         input() # 按回车预测下一个样本
 
 visualization()
