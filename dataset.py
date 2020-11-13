@@ -1,4 +1,5 @@
 import re
+import random
 import itertools
 import collections
 import pandas as pd
@@ -37,8 +38,24 @@ def load_simplifyweibo_4_moods(file=_MOODS):
     df = pd.read_csv(file)
     X = df.review.to_list()
     y = df.label.to_list()
-    categoricals = {'喜悦':0, '愤怒':1, '厌恶':2, '低落':3}
+    categoricals = {"喜悦":0, "愤怒":1, "厌恶":2, "低落":3}
     return X, y, categoricals
+
+_LCQMC = "/home/zhiwen/workspace/dataset/LCQMC/totals.txt"
+def load_lcqmc(file=_LCQMC):
+    with open(file, encoding="utf-8") as fd:
+        lines = fd.readlines()
+    random.shuffle(lines)
+    X1 = []
+    X2 = []
+    y = []
+    for line in lines:
+        x1, x2, label = line.strip().split("\t")
+        X1.append(x1)
+        X2.append(x2)
+        y.append(int(label))
+    categoricals = {"匹配":1, "不匹配":0}
+    return X1, X2, y, categoricals
 
 class SimpleTokenizer:
     """字转ID
