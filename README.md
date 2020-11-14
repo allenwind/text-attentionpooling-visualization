@@ -39,6 +39,9 @@ AttentionPooling在分类问题上的可视化分析。
 ## 数据来源
 
 [1] http://thuctc.thunlp.org/
+
 [2] https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/weibo_senti_100k/intro.ipynb
+
 [3] https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/simplifyweibo_4_moods/intro.ipynb
+
 [4] https://www.aclweb.org/anthology/C18-1166/
