@@ -1,4 +1,5 @@
 import re
+import glob
 import random
 import itertools
 import collections
@@ -22,12 +23,33 @@ def load_THUCNews_title_label(file=_THUCNews):
     clabels = [categoricals[i] for i in labels]
     return titles, clabels, categoricals
 
+_THUContent = "/home/zhiwen/workspace/dataset/THUCTC/THUCNews/**/*.txt"
+def load_THUCNews_content_label(file=_THUContent, shuffle=True):
+    categoricals = {'体育': 0, '娱乐': 1, '家居': 2, '彩票': 3, 
+                    '房产': 4, '教育': 5, '时尚': 6, '时政': 7, 
+                    '星座': 8, '游戏': 9, '社会': 10, '科技': 11, 
+                    '股票': 12, '财经': 13}
+    
+    files = glob.glob(file)
+    if shuffle:
+        random.shuffle(files)
+
+    def Xy_generator(files):
+        for path in files:
+            label = path.rsplit("/", -2)[-2]
+            with open(path, encoding="utf-8") as fd:
+                _ = fd.readline() # skip title
+                content = fd.read().strip()
+            content = content.replace("\n", "").replace("\u3000", "")
+            yield content, categoricals[label]
+    return Xy_generator, files, categoricals
+
 _w100k = "/home/zhiwen/workspace/dataset/classification/weibo_senti_100k/weibo_senti_100k.csv"
 def load_weibo_senti_100k(file=_w100k, noe=True):
     df = pd.read_csv(file)
     X = df.review.to_list()
     y = df.label.to_list()
-    # 去 emoji 表情
+    # 去 emoji 表情，提升样本训练难度
     if noe:
         X = [re.sub("\[.+?\]", lambda x:"", s) for s in X]
     categoricals = {"负面":0, "正面":1}
@@ -104,6 +126,13 @@ class SimpleTokenizer:
     @property
     def vocab(self):
         return self.char2id
+
+    def save(self, file):
+        pass
+
+    @classmethod
+    def load(cls, file):
+        pass
 
 def find_best_maxlen(X, mode="max"):
     # 获取适合的截断长度

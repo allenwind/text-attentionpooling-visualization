@@ -39,8 +39,18 @@ def print_color_string(string, ws):
         i = int(w * len(colors))
         print(cs(s, colors[i]), end="")
 
+template = '<font color="{}">{}</font>'
+def markdown_color_string(string, ws):
+    ws = (ws - np.min(ws)) / (np.max(ws) - np.min(ws)) * 0.99
+    ss = []
+    for s, w in zip(string, ws):
+        i = int(w * len(colors))
+        ss.append(template.format(colors[i], s))
+    return "".join(ss)
+
 if __name__ == "__main__":
     # for testing
     import string
     s = string.ascii_letters
     print_color_string(s, np.arange(len(s)))
+    print(markdown_color_string(s, np.arange(len(s))))

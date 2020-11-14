@@ -1,3 +1,4 @@
+import random
 import warnings
 warnings.filterwarnings("ignore")
 import numpy as np
@@ -16,34 +17,66 @@ from sklearn import metrics
 
 from attentionpooling import AttentionPooling1D
 from dataset import SimpleTokenizer, find_best_maxlen
+from dataset import load_THUCNews_content_label
 
-from dataset import load_THUCNews_title_label
-from dataset import load_weibo_senti_100k
-from dataset import load_simplifyweibo_4_moods
+# 长文分类AttentionPooling可视化
 
-X, y, classes = load_THUCNews_title_label()
-X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, random_state=7384672)
-
+gen, files, classes = load_THUCNews_content_label()
+files = files[:]
 num_classes = len(classes)
+maxlen = 512
+
+# cross validation
+def split_index(size, scale=(0.8,0.1,0.1)):
+    i = int(scale[0] * size)
+    j = int((scale[0] + scale[1]) * size)
+    return i, j
+
+i, j = split_index(size=len(files))
+
+files_train = files[:i]
+files_val = files[i:j]
+files_test = files[j:]
+
+# train tokenizer
+def Xiter(files):
+    for content, label in gen(files):
+        yield content
+
 tokenizer = SimpleTokenizer()
-tokenizer.fit(X_train)
-X_train = tokenizer.transform(X_train)
+tokenizer.fit(*[Xiter(files)])
 
-# maxlen = 48
-maxlen = find_best_maxlen(X_train)
+class DataGenerator:
 
-X_train = sequence.pad_sequences(
-    X_train, 
-    maxlen=maxlen,
-    dtype="int32",
-    padding="post",
-    truncating="post",
-    value=0
-)
-y_train = tf.keras.utils.to_categorical(y_train)
+    def __init__(self, files, loop):
+        self.files = files
+        self.loop = loop
+
+    def __call__(self):
+        for _ in range(self.loop):
+            random.shuffle(self.files)
+            for content, label in gen(self.files):
+                content = content[:maxlen]
+                content = tokenizer.transform([content])[0]
+                label = tf.keras.utils.to_categorical(label, num_classes)
+                yield content, label
 
 num_words = len(tokenizer)
 embedding_dims = 128
+batch_size = 32
+
+def create_dataset(files, loop=int(1e12)):
+    dataset = tf.data.Dataset.from_generator(
+        generator=DataGenerator(files, loop),
+        output_types=(tf.int32, tf.int32)
+    )
+
+    dataset = dataset.padded_batch(
+        batch_size=batch_size,
+        padded_shapes=([maxlen], [None]),
+        drop_remainder=True
+    )
+    return dataset
 
 inputs = Input(shape=(maxlen,))
 mask = Lambda(lambda x: tf.not_equal(x, 0))(inputs)
@@ -68,21 +101,26 @@ model.compile(loss="categorical_crossentropy",
               metrics=["accuracy"])
 model.summary()
 
-model_w_outputs = Model(inputs, w)
+model_weights_outputs = Model(inputs, w)
 
 batch_size = 32
-epochs = 10
+epochs = 2
 callbacks = []
-model.fit(X_train, y_train,
+
+dl_train = create_dataset(files_train)
+dl_val = create_dataset(files_val, loop=1)
+model.fit(dl_train,
           batch_size=batch_size,
           epochs=epochs,
           callbacks=callbacks,
-          validation_split=0.2)
+          validation_data=dl_val,
+          steps_per_epoch=len(files_train)//batch_size
+)
 
 id_to_classes = {j:i for i,j in classes.items()}
 from color import print_color_string
 def visualization():
-    for sample, label in zip(X_test, y_test):
+    for sample, label in gen(files_test):
         sample_len = len(sample)
         if sample_len > maxlen:
             sample_len = maxlen
@@ -104,7 +142,7 @@ def visualization():
             continue
             
         # 预测权重
-        weights = model_w_outputs.predict(x)[0]
+        weights = model_weights_outputs.predict(x)[0]
         # print(sample, "=>", id_to_classes[y_pred_id])
         # print(weights.flatten() * len(sample))
 
@@ -114,4 +152,3 @@ def visualization():
         input() # 按回车预测下一个样本
 
 visualization()
-
