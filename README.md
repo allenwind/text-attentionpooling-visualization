@@ -32,9 +32,15 @@ AttentionPooling在分类问题上的可视化分析。
 
 示例五：
 
-文本匹配Attentionpooling可视化，
+文本匹配Attentionpooling可视化示例一，
 
 ![](asset/attention_pooling_demo_5.png)
+
+
+
+文本匹配Attentionpooling可视化示例二，
+
+![](asset/attention_pooling_demo_6.png)
 
 ## 数据来源
 
