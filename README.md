@@ -1,8 +1,8 @@
 # text-attentionpooling-visualization
 
-AttentionPooling在分类问题上的可视化分析。
+AttentionPooling在分类和匹配问题上的可视化分析。
 
-## 示例
+## 分类问题示例
 
 示例一：
 
@@ -29,6 +29,8 @@ AttentionPooling在分类问题上的可视化分析。
 
 ![](asset/attention_pooling_demo_4.png)
 
+
+## 匹配问题示例
 
 示例五：
 

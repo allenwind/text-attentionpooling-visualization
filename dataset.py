@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 _THUCNews = "/home/zhiwen/workspace/dataset/THUCNews-title-label.txt"
-def load_THUCNews_title_label(file=_THUCNews):
+def load_THUCNews_title_label(file=_THUCNews, nobrackets=True):
     with open(file, encoding="utf-8") as fd:
         text = fd.read()
     lines = text.split("\n")[:-1]
@@ -15,6 +15,13 @@ def load_THUCNews_title_label(file=_THUCNews):
     labels = []
     for line in lines:
         title, label = line.split("\t")
+        if not title:
+            continue
+
+        # 去掉括号内容
+        if nobrackets:
+            title = re.sub("\(.+?\)", lambda x:"", title)
+
         titles.append(title)
         labels.append(label)
     categoricals = list(set(labels))
@@ -78,6 +85,14 @@ def load_lcqmc(file=_LCQMC):
         y.append(int(label))
     categoricals = {"匹配":1, "不匹配":0}
     return X1, X2, y, categoricals
+
+_ATEC_CCKS = "/home/zhiwen/workspace/dataset/matching/ATEC_CCKS/totals.txt"
+def load_ATEC_CCKS(file=_ATEC_CCKS):
+    return load_lcqmc(file)
+
+_XNLI = "/home/zhiwen/workspace/dataset/ChineseGLUE/chineseGLUEdatasets.v0.0.1/xnli/totals.txt"
+def load_xnli(file=_XNLI):
+    pass
 
 class SimpleTokenizer:
     """字转ID
