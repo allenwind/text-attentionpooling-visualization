@@ -21,6 +21,10 @@ from dataset import load_THUCNews_title_label
 from dataset import load_weibo_senti_100k
 from dataset import load_simplifyweibo_4_moods
 
+# 来自Transformer的激活函数，效果略有提升
+def gelu(x):
+    return 0.5 * x * (1.0 + tf.math.erf(x / tf.sqrt(2.0)))
+
 X, y, classes = load_THUCNews_title_label()
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, random_state=7384672)
 
@@ -59,7 +63,7 @@ x = Conv1D(filters=128,
 x, w = AttentionPooling1D(hdims=128)(x, mask=mask)
 x = Dense(128)(x)
 x = Dropout(0.2)(x)
-x = Activation("relu")(x)
+x = gelu(x)
 outputs = Dense(num_classes, activation="softmax")(x)
 
 model = Model(inputs, outputs)
@@ -68,7 +72,7 @@ model.compile(loss="categorical_crossentropy",
               metrics=["accuracy"])
 model.summary()
 
-model_w_outputs = Model(inputs, w)
+model_pooling_outputs = Model(inputs, w)
 
 batch_size = 32
 epochs = 10
@@ -104,7 +108,7 @@ def visualization():
             continue
             
         # 预测权重
-        weights = model_w_outputs.predict(x)[0]
+        weights = model_pooling_outputs.predict(x)[0]
         # print(sample, "=>", id_to_classes[y_pred_id])
         # print(weights.flatten() * len(sample))
 

@@ -1,5 +1,17 @@
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib
 from stringcolor import cs
+
+def gen_colormap_hex(name="rainbow"):
+    cmap = matplotlib.cm.get_cmap(name)
+    colors = []
+    for i in range(cmap.N):
+        rgb = cmap(i)[:3]
+        colors.append(matplotlib.colors.rgb2hex(rgb))
+    return colors
+
+colors = gen_colormap_hex()
 
 # 蓝色系hex
 colors = [

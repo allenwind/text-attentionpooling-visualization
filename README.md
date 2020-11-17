@@ -1,6 +1,6 @@
 # text-attentionpooling-visualization
 
-AttentionPooling在分类和匹配问题上的可视化分析。
+AttentionPooling在分类和匹配问题上的可视化分析。GlobalMaxPool请看[text-globalmaxpool-visualization](https://github.com/allenwind/text-globalmaxpool-visualization)。
 
 ## 分类问题示例
 

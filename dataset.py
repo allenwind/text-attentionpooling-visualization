@@ -11,6 +11,7 @@ def load_THUCNews_title_label(file=_THUCNews, nobrackets=True):
     with open(file, encoding="utf-8") as fd:
         text = fd.read()
     lines = text.split("\n")[:-1]
+    random.shuffle(lines)
     titles = []
     labels = []
     for line in lines:
