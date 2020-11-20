@@ -22,6 +22,23 @@ from dataset import load_lcqmc
 def gelu(x):
     return 0.5 * x * (1.0 + tf.math.erf(x / tf.sqrt(2.0)))
 
+class PositionEmbedding(tf.keras.layers.Layer):
+    """可学习的位置Embedding"""
+
+    def __init__(self, maxlen, output_dim, **kwargs):
+        super(PositionEmbedding, self).__init__(**kwargs)
+        self.maxlen = maxlen
+        self.output_dim = output_dim
+        self.embedding = tf.keras.layers.Embedding(
+            input_dim=maxlen,
+            output_dim=output_dim
+        )
+
+    def call(self, inputs):
+        maxlen = tf.shape(inputs)[-1]
+        positions = tf.range(start=0, limit=maxlen, delta=1)
+        return self.embedding(positions)
+
 X1, X2, y, classes = load_lcqmc()
 X1_train = X1[:-1000]
 X2_train = X2[:-1000]
@@ -39,6 +56,7 @@ X2_train = tokenizer.transform(X2_train)
 
 maxlen = 48
 hdims = 128
+epochs = 20
 
 X1_train = sequence.pad_sequences(
     X1_train, 
@@ -73,13 +91,15 @@ embedding = Embedding(
     embeddings_initializer="glorot_normal",
     input_length=maxlen
 )
+# 加上position embedding后，val acc:90%+
+posembedding = PositionEmbedding(maxlen, embedding_dims)
 layernom = LayerNormalization()
 
-x1 = embedding(x1_input)
+x1 = embedding(x1_input) + posembedding(x1_input)
 x1 = layernom(x1)
 x1 = Dropout(0.1)(x1)
 
-x2 = embedding(x2_input)
+x2 = embedding(x2_input) + posembedding(x2_input)
 x2 = layernom(x2)
 x2 = Dropout(0.1)(x2)
 
@@ -120,7 +140,7 @@ lr = tf.keras.optimizers.schedules.PiecewiseConstantDecay(
 adam = tf.keras.optimizers.Adam(lr)
 model.compile(loss="categorical_crossentropy", optimizer=adam, metrics=["accuracy"])
 
-model.fit([X1_train, X2_train], y_train, shuffle=True, batch_size=32, epochs=10, validation_split=0.1)
+model.fit([X1_train, X2_train], y_train, shuffle=True, batch_size=32, epochs=epochs, validation_split=0.1)
 
 model_pooling_outputs = Model([x1_input, x2_input], [w1, w2])
 
