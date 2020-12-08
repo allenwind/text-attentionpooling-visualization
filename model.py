@@ -84,7 +84,7 @@ model.fit(X_train, y_train,
           validation_split=0.2)
 
 id_to_classes = {j:i for i,j in classes.items()}
-from color import print_color_string
+from textcolor import print_color_text
 def visualization():
     for sample, label in zip(X_test, y_test):
         sample_len = len(sample)
@@ -113,7 +113,7 @@ def visualization():
         # print(weights.flatten() * len(sample))
 
         weights = weights.flatten()[:sample_len]
-        print_color_string(sample, weights)
+        print_color_text(sample, weights)
         print(" =>", id_to_classes[y_pred_id])
         input() # 按回车预测下一个样本
 

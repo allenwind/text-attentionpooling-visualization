@@ -145,7 +145,7 @@ model.fit([X1_train, X2_train], y_train, shuffle=True, batch_size=32, epochs=epo
 model_pooling_outputs = Model([x1_input, x2_input], [w1, w2])
 
 id_to_classes = {j:i for i,j in classes.items()}
-from color import print_color_string
+from textcolor import print_color_text
 def visualization():
     for sample1, sample2, label in zip(X1_test, X2_test, y_test):
         sample1_len = len(sample1)
@@ -187,9 +187,9 @@ def visualization():
         w2 = w2[0]
         w1 = w1.flatten()[:sample1_len]
         w2 = w2.flatten()[:sample2_len]
-        print_color_string(sample1, w1)
+        print_color_text(sample1, w1)
         print()
-        print_color_string(sample2, w2)
+        print_color_text(sample2, w2)
         print()
 
         input() # 按回车预测下一个样本
