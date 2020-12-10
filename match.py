@@ -35,9 +35,13 @@ class PositionEmbedding(tf.keras.layers.Layer):
         )
 
     def call(self, inputs):
-        maxlen = tf.shape(inputs)[-1]
-        positions = tf.range(start=0, limit=maxlen, delta=1)
+        # maxlen = tf.shape(inputs)[-1]
+        positions = tf.range(start=0, limit=self.maxlen, delta=1)
+        positions = tf.expand_dims(positions, axis=0)
         return self.embedding(positions)
+
+    def compute_output_shape(self, input_shape):
+        return input_shape + (self.output_dim,)
 
 X1, X2, y, classes = load_lcqmc()
 X1_train = X1[:-1000]
