@@ -22,14 +22,15 @@ hexcolors = [
 hex_lenght = len(hexcolors)
 
 template = "\033[38;5;{value}m{string}\033[0m"
-def print_color_text(text, ws):
+def print_color_text(text, ws, withend=True):
     ws = np.array(ws)
     ws = (ws - np.min(ws)) / (np.max(ws) - np.min(ws)) * 0.99
     for string, w in zip(text, ws):
         vid = int(w * length)
         value = ansi_code_ids[vid]
         print(template.format(string=string, value=value), end="")
-    print()
+    if withend:
+        print()
 
 markdown_template = '<font color="{}">{}</font>'
 def render_color_markdown(text, ws):

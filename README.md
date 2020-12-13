@@ -1,6 +1,7 @@
 # text-attentionpooling-visualization
 
-AttentionPooling在分类和匹配问题上的可视化分析。GlobalMaxPool请看[text-globalmaxpool-visualization](https://github.com/allenwind/text-globalmaxpool-visualization)。
+AttentionPooling和MultiHeadAttentionPooling在分类和匹配问题上的可视化分析。GlobalMaxPool请看[text-globalmaxpool-visualization](https://github.com/allenwind/text-globalmaxpool-visualization)。
+
 
 
 AttentionPooling1D中call函数：
@@ -26,6 +27,9 @@ class AttentionPooling1D(tf.keras.layers.Layer):
         x = tf.reduce_sum(w * x0, axis=1)
         return x, w
 ```
+
+在这个基础上可以进行多头化操作，称为MultiHeadAttentionPooling1D，以扩展关键信息的捕获能力。
+
 
 ## 分类问题示例
 
@@ -68,6 +72,35 @@ class AttentionPooling1D(tf.keras.layers.Layer):
 文本匹配Attentionpooling可视化示例二，
 
 ![](asset/attention_pooling_demo_6.png)
+
+## 多头Pooling示例
+
+MultiHeadAttentionPooling可视化示例一（情感分析），
+
+![](asset/mha/mha_demo_1.png)
+
+其对应的Attention权重可视化，
+
+![](asset/mha/mha_demo_fig_1.png)
+
+
+MultiHeadAttentionPooling可视化示例二（酒店评论），
+
+![](asset/mha/mha_demo_2.png)
+
+其对应的Attention权重可视化，
+
+![](asset/mha/mha_demo_fig_2.png)
+
+
+MultiHeadAttentionPooling可视化示例三（新闻分类），
+
+![](asset/mha/mha_demo_3.png)
+
+其对应的Attention权重可视化，
+
+![](asset/mha/mha_demo_fig_3.png)
+
 
 ## 数据来源
 

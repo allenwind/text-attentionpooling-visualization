@@ -55,6 +55,7 @@ def load_THUCNews_content_label(file=_THUContent, shuffle=True):
 _w100k = "/home/zhiwen/workspace/dataset/classification/weibo_senti_100k/weibo_senti_100k.csv"
 def load_weibo_senti_100k(file=_w100k, noe=True):
     df = pd.read_csv(file)
+    df = df.sample(frac=1)
     X = df.review.to_list()
     y = df.label.to_list()
     # 去 emoji 表情，提升样本训练难度
@@ -66,9 +67,36 @@ def load_weibo_senti_100k(file=_w100k, noe=True):
 _MOODS = "/home/zhiwen/workspace/dataset/classification/simplifyweibo_4_moods.csv"
 def load_simplifyweibo_4_moods(file=_MOODS):
     df = pd.read_csv(file)
+    df = df.sample(frac=1)
     X = df.review.to_list()
     y = df.label.to_list()
     categoricals = {"喜悦":0, "愤怒":1, "厌恶":2, "低落":3}
+    return X, y, categoricals
+
+def load_simplifyweibo_3_moods():
+    X, y, _ = load_simplifyweibo_4_moods()
+    categoricals = {"愤怒":0, "厌恶":1, "低落":2}
+    Xs = []
+    ys = []
+    for sample, label in zip(X, y):
+        if label == 0:
+            continue
+        Xs.append(sample)
+        ys.append(label - 1)
+    return Xs, ys, categoricals
+
+_HOTEL = "/home/zhiwen/workspace/dataset/classification/ChnSentiCorp_htl_all/ChnSentiCorp_htl_all.csv"
+def load_hotel_comment(file=_HOTEL):
+    with open(file, encoding="utf-8") as fd:
+        lines = fd.readlines()[1:]
+    random.shuffle(lines)
+    X = []
+    y = []
+    for line in lines:
+        label, commet = line.strip().split(",", 1)
+        X.append(commet)
+        y.append(int(label))
+    categoricals = {"负面":0, "正面":1}
     return X, y, categoricals
 
 _LCQMC = "/home/zhiwen/workspace/dataset/LCQMC/totals.txt"
@@ -162,3 +190,12 @@ def find_best_maxlen(X, mode="max"):
     if mode == "max":
         maxlen = np.max(ls)
     return int(maxlen)
+
+def balance_class_weight(labels):
+    c = collections.Counter(labels)
+    total = sum(c.values()) / len(c)
+    class_weight = {label:total / freq for label, freq in c.items()}
+    return class_weight
+
+def balance_upsampling(X, y):
+    pass
