@@ -88,6 +88,7 @@ class MultiHeadAttentionPooling1D(tf.keras.layers.Layer):
         w = tf.math.softmax(w, axis=1) # 有mask位置对应的权重变为很小的值
         # 加权平均
         # （batch_size, seqlen, heads, 1) * (batch_size, seqlen, 1, hdims) 
+        # 这里直接对原始输入进行加权平均，因此要考虑维度要一致
         x = tf.reduce_sum(
             tf.expand_dims(w, axis=-1) * tf.expand_dims(x0, axis=2),
             axis=1

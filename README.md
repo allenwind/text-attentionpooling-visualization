@@ -84,13 +84,26 @@ MultiHeadAttentionPooling可视化示例一（情感分析），
 ![](asset/mha/mha_demo_fig_1.png)
 
 
-MultiHeadAttentionPooling可视化示例二（酒店评论），
+MultiHeadAttentionPooling可视化示例二（酒店评论一），
 
 ![](asset/mha/mha_demo_2.png)
 
 其对应的Attention权重可视化，
 
 ![](asset/mha/mha_demo_fig_2.png)
+
+
+
+
+
+MultiHeadAttentionPooling可视化示例二（酒店评论二），
+
+![](asset/mha/mha_demo_4.png)
+
+其对应的Attention权重可视化，
+
+![](asset/mha/mha_demo_fig_4.png)
+
 
 
 MultiHeadAttentionPooling可视化示例三（新闻分类），
