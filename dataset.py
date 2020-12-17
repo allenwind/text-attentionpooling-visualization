@@ -119,6 +119,27 @@ _ATEC_CCKS = "/home/zhiwen/workspace/dataset/matching/ATEC_CCKS/totals.txt"
 def load_ATEC_CCKS(file=_ATEC_CCKS):
     return load_lcqmc(file)
 
+def convert_to_triplet(load_func, with_fake=False, shuffle=True):
+    X1, X2, y, categoricals = load_func()
+    Xa = [] # anchor sentence
+    Xp = [] # positive sentence, simliar to anchor
+    Xn = [] # negitive sentence, difference to anchor
+    negs = list(set(X1 + X2))
+    for x1, x2, label in zip(X1, X2, y):
+        if with_fake and label == 0:
+            Xa.append(x1)
+            Xp.append(x1) # 拿anchor做positive
+            Xn.append(x2)
+        if label == 1:
+            Xa.append(x1)
+            Xp.append(x2)
+            Xn.append(random.choice(negs)) # 随机选择一个样本作负样本
+    if shuffle:
+        np.random.RandomState(2387283).shuffle(Xa)
+        np.random.RandomState(2387283).shuffle(Xp)
+        np.random.RandomState(2387283).shuffle(Xn)
+    return Xa, Xp, Xn, categoricals
+
 _XNLI = "/home/zhiwen/workspace/dataset/ChineseGLUE/chineseGLUEdatasets.v0.0.1/xnli/totals.txt"
 def load_xnli(file=_XNLI):
     pass

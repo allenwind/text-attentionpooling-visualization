@@ -73,6 +73,20 @@ class AttentionPooling1D(tf.keras.layers.Layer):
 
 ![](asset/attention_pooling_demo_6.png)
 
+## 基于交互的匹配示例
+
+示例一，
+
+![](asset/interactive/model_interactive_demo_1.png)
+
+
+
+示例二，
+
+![](asset/interactive/model_interactive_demo_2.png)
+
+
+
 ## 多头Pooling示例
 
 MultiHeadAttentionPooling可视化示例一（情感分析），
