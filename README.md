@@ -1,6 +1,8 @@
 # text-attentionpooling-visualization
 
-AttentionPooling和MultiHeadAttentionPooling在分类和匹配问题上的可视化分析。GlobalMaxPool请看[text-globalmaxpool-visualization](https://github.com/allenwind/text-globalmaxpool-visualization)。
+AttentionPooling和MultiHeadAttentionPooling在分类和匹配问题上的可视化分析。这里提供丰富的可视化例子。
+
+GlobalMaxPool请看[text-globalmaxpool-visualization](https://github.com/allenwind/text-globalmaxpool-visualization)。
 
 
 
@@ -57,6 +59,12 @@ class AttentionPooling1D(tf.keras.layers.Layer):
 长文分类，
 
 ![](asset/attention_pooling_demo_4.png)
+
+示例五：
+
+把分类问题化为文本与标签的匹配问题，
+
+![](asset/attention_pooling_demo_5_0.png)
 
 
 ## 匹配问题示例
