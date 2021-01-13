@@ -20,6 +20,7 @@ from dataset import SimpleTokenizer, find_best_maxlen
 from dataset import load_THUCNews_title_label
 
 # 把分类问题当做文本与标签匹配的问题
+# 0.9232
 
 # 来自Transformer的激活函数，效果略有提升
 def gelu(x):
@@ -49,6 +50,7 @@ class PositionEmbedding(tf.keras.layers.Layer):
 X, y, classes = load_THUCNews_title_label()
 
 def convert_to_pairs(X, y, classes):
+    # 转化句子和标题（标签）匹配问题
     iclasses = {i:label for label, i in classes.items()}
     X1 = []
     X2 = []
@@ -85,7 +87,7 @@ X2_train = tokenizer.transform(X2_train)
 
 maxlen = 48
 hdims = 128
-epochs = 1
+epochs = 2
 
 X1_train = sequence.pad_sequences(
     X1_train, 

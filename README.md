@@ -81,6 +81,12 @@ class AttentionPooling1D(tf.keras.layers.Layer):
 
 ![](asset/attention_pooling_demo_6.png)
 
+
+文本匹配Attentionpooling可视化示例三，使用triplet loss，
+
+![](asset/attention_pooling_demo_7.png)
+
+
 ## 基于交互的匹配示例
 
 示例一，
